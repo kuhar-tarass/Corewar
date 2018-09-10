@@ -22,8 +22,9 @@ WHITE	=\033[0;37m#		# White
 
 CC=		gcc
 
-FLAGS=	-Wall -Wextra -Werror
-
+ifeq ($(shell uname -s),Darwin)
+	FLAGS=-Wall -Werror -Wextra
+endif
 NAME=	corewar
 
 INCLD_DIR=		./include/
@@ -79,13 +80,16 @@ OBJ= $(SRC:%.c=%.o)
 
 LIBFT_DIR= ../libft/
 LIBFT= ../libft/libft.a
-
+NCURSES_FLAG=-lncurses
+ifeq ($(shell uname -s),Linux)
+	PTHREAD=-pthread
+endif
 OK_STRING    =\#\#\#	$(GREEN)$(NAME)$(COLOR_OFF) is $(GREEN)READY!$(COLOR_OFF)	\#\#\#
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) $(FLAGS) $(LIBFT) $(OBJ) -I $(INCLD_DIR) -o $(NAME) -lncurses
+	@$(CC) $(FLAGS)  $(OBJ) -I $(INCLD_DIR) -o $(NAME) $(LIBFT) $(NCURSES_FLAG) $(PTHREAD)
 	@printf "\n\n$(OK_STRING)\n\n"
 
 %.o:%.c $(LIBFT) ./include/corewar.h ./include/error.h
